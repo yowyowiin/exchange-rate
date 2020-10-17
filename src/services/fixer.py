@@ -9,7 +9,7 @@ class Fixer:
     def get_exchange_rate() -> requests.request:
         url = f'http://data.fixer.io/api/latest?access_key={FIXER_API_KEY}'
 
-        response = requests.request("GET", url)
+        response = requests.request('GET', url)
 
         return response
 

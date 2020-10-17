@@ -9,7 +9,7 @@ class DiarioOficial:
     def get_exchange_rate() -> requests.request:
         url = 'https://www.banxico.org.mx/tipcamb/tipCamMIAction.do'
 
-        response = requests.request("GET", url)
+        response = requests.request('GET', url)
 
         return response
 
