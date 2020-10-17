@@ -1,10 +1,16 @@
+import logging
+
 import requests
 from settings import BANXICO_TOKEN
 from datetime import datetime
 import pytz
 
+from src.utils.logs_messages import LogsMessages
 
-class Banxico:
+logger = logging.getLogger('Banxico Service')
+
+
+class Banxico(LogsMessages):
 
     @staticmethod
     def get_exchange_rate() -> requests.request:
@@ -24,12 +30,14 @@ class Banxico:
             return response
 
         else:
-            formated_exchange = exchange.json()['bmx']['series'][0]['datos'][0]
-            timestamp = formated_exchange['fecha']
-            value = formated_exchange['dato']
+            try:
+                formated_exchange = exchange.json()['bmx']['series'][0]['datos'][0]
+                timestamp = formated_exchange['fecha']
+                value = formated_exchange['dato']
 
-            response['last_updated'] = datetime.strptime(timestamp, '%d/%m/%Y').isoformat()
-            response['value'] = float(value)
+                response['last_updated'] = datetime.strptime(timestamp, '%d/%m/%Y').isoformat()
+                response['value'] = float(value)
+            except Exception as error:
+                logger.error(self.log_error(str(error)))
 
         return response
-

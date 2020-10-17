@@ -1,9 +1,15 @@
+import logging
+
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 
+from src.utils.logs_messages import LogsMessages
 
-class DiarioOficial:
+logger = logging.getLogger('Diario Oficial Service')
+
+
+class DiarioOficial(LogsMessages):
 
     @staticmethod
     def get_exchange_rate() -> requests.request:
@@ -21,10 +27,13 @@ class DiarioOficial:
             return response
 
         else:
-            exchange_html = exchange.text
+            try:
+                exchange_html = exchange.text
 
-            response['last_updated'] = self.__find_last_date(exchange_html)
-            response['value'] = self.__find_mxn_exchange(exchange_html)
+                response['last_updated'] = self.__find_last_date(exchange_html)
+                response['value'] = self.__find_mxn_exchange(exchange_html)
+            except Exception as error:
+                logger.error(self.log_error(str(error)))
 
         return response
 
@@ -32,7 +41,7 @@ class DiarioOficial:
     def __find_mxn_exchange(html: str) -> float:
         soup = BeautifulSoup(html, 'html.parser')
         data = soup.find_all('tr', class_='renglonNon')
-        currency_row = data[0].find_all('td')[1]
+        currency_row = data[0].find_all('td')[3]
         currency = str(currency_row).replace('<td align=\"right\">', '').replace('</td>', '').strip()
 
         return float(currency)

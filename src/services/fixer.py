@@ -1,9 +1,15 @@
+import logging
+
 import requests
 from settings import FIXER_API_KEY
 from datetime import datetime
 
+from src.utils.logs_messages import LogsMessages
 
-class Fixer:
+logger = logging.getLogger('Fixer Service')
+
+
+class Fixer(LogsMessages):
 
     @staticmethod
     def get_exchange_rate() -> requests.request:
@@ -21,15 +27,18 @@ class Fixer:
             return response
 
         else:
-            formated_exchange = exchange.json()
-            timestamp = formated_exchange['timestamp']
-            value = self.__convert_usd_to_mxn(
-                usd=formated_exchange['rates']['USD'],
-                mxn=formated_exchange['rates']['MXN']
-            )
+            try:
+                formated_exchange = exchange.json()
+                timestamp = formated_exchange['timestamp']
+                value = self.__convert_usd_to_mxn(
+                    usd=formated_exchange['rates']['USD'],
+                    mxn=formated_exchange['rates']['MXN']
+                )
 
-            response['last_updated'] = datetime.fromtimestamp(timestamp).isoformat()
-            response['value'] = value
+                response['last_updated'] = datetime.fromtimestamp(timestamp).isoformat()
+                response['value'] = value
+            except Exception as error:
+                logger.error(self.log_error(str(error)))
 
         return response
 

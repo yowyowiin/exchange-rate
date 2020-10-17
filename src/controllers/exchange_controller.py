@@ -1,14 +1,19 @@
 import json
+import logging
 
 from bottle import HTTPResponse
 from src.services.fixer import Fixer
 from src.services.diario_oficial import DiarioOficial
 from src.services.banxico import Banxico
 from src import app
+from src.utils.logs_messages import LogsMessages
 
+logs_messages = LogsMessages()
 fixer = Fixer()
 diario_oficial = DiarioOficial()
 banxico = Banxico()
+
+logger = logging.getLogger('Exchange Controller')
 
 
 def ok_response(data=None) -> dict:
@@ -33,10 +38,19 @@ def error_response(data=None, status_code=500) -> HTTPResponse:
 
 @app.route('/api/exchange-rate', method='GET')
 def get_exchange_rate():
-    rates = {
-        'diario_oficial_de_la_federacion': diario_oficial.get_usd_to_mxn(),
-        'fixer': fixer.get_usd_to_mxn(),
-        'banxico': banxico.get_usd_to_mxn()
-    }
+    try:
+        logger.info('Retrieving exchange rates')
+        rates = {
+            'diario_oficial_de_la_federacion': diario_oficial.get_usd_to_mxn(),
+            'fixer': fixer.get_usd_to_mxn(),
+            'banxico': banxico.get_usd_to_mxn()
+        }
 
-    return ok_response(rates)
+        return ok_response(rates)
+
+    except Exception as error:
+        logger.error(logs_messages.log_error(str(error)))
+
+        return error_response(str(error))
+
+
