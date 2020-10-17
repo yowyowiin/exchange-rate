@@ -11,3 +11,6 @@ APP_HOST = '0.0.0.0'
 
 # Fixer settings
 FIXER_API_KEY = getenv('FIXER_API_KEY')
+
+# Banxico settings
+BANXICO_TOKEN = getenv('BANXICO_TOKEN')
