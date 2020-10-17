@@ -9,12 +9,7 @@ class Fixer:
     def get_exchange_rate() -> requests.request:
         url = f'http://data.fixer.io/api/latest?access_key={FIXER_API_KEY}'
 
-        payload = {}
-        headers = {
-            'Cookie': '__cfduid=de4dc1d30ba1b2d1913f26d08165f4c641602897611'
-        }
-
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url)
 
         return response
 
