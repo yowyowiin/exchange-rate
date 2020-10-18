@@ -2,6 +2,7 @@ from flask import make_response
 
 
 class ResponseFormat:
+    @staticmethod
     def ok_response(data=None) -> dict:
         response = {
             'status': 'OK'
@@ -11,6 +12,7 @@ class ResponseFormat:
 
         return response
 
+    @staticmethod
     def error_response(data=None, status_code=500) -> make_response:
         if data is None:
             data = {}

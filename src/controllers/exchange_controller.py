@@ -11,42 +11,25 @@ from src.utils.cache_memory import CacheMemory
 from src.utils.logs_messages import LogsMessages
 from itsdangerous import (BadSignature, SignatureExpired)
 
+from src.utils.response_format import ResponseFormat
+
 logs_messages = LogsMessages()
 fixer = Fixer()
 diario_oficial = DiarioOficial()
 banxico = Banxico()
 authentication = Authentication()
 cache_memory = CacheMemory()
+responses = ResponseFormat()
 
 logger = logging.getLogger('Exchange Controller')
-
-
-def ok_response(data=None) -> dict:
-    response = {
-        'status': 'OK'
-    }
-    if data or type(data) == list:
-        response['rates'] = data
-
-    return response
-
-
-def error_response(data=None, status_code=500) -> make_response:
-    if data is None:
-        data = {}
-
-    resp = make_response({'status': 'ERROR', 'error_message': data}, status_code)
-
-    return resp
 
 
 @app.route('/api/exchange-rate', methods=['GET'])
 def get_exchange_rate():
     try:
         logger.info('Retrieving exchange rates')
-        print(request.headers)
         if 'token' not in request.headers or 'user' not in request.headers:
-            return error_response('token or user headers are missing', status_code=400)
+            return responses.error_response('token or user headers are missing', status_code=400)
 
         token = request.headers['token']
         user = request.headers['user']
@@ -54,7 +37,7 @@ def get_exchange_rate():
         if authentication.verify_auth_token(token):
             if cache_memory.check_element_existence(user) and \
                     int(cache_memory.get_element(user).decode('utf-8')) >= USER_RATE_LIMIT:
-                return error_response('User requests exceeded', status_code=429)
+                return responses.error_response('User requests exceeded', status_code=429)
             else:
                 cache_memory.save_user_request(user, 1)
                 rates = {
@@ -63,16 +46,16 @@ def get_exchange_rate():
                     'banxico': banxico.get_usd_to_mxn()
                 }
 
-                return ok_response(rates)
+                return responses.ok_response(rates)
 
     except (SignatureExpired, BadSignature) as error:
         logger.error(logs_messages.log_error(str(error)))
 
-        return error_response(str(error), status_code=401)
+        return responses.error_response(str(error), status_code=401)
 
     except Exception as error:
         logger.error(logs_messages.log_error(str(error)))
 
-        return error_response(str(error))
+        return responses.error_response(str(error))
 
 
