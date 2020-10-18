@@ -21,4 +21,4 @@ RUN pip3 install -r requirements.txt
 EXPOSE 8085
 
 # Entrypoint
-CMD python3 server.py
+CMD python3 app.py

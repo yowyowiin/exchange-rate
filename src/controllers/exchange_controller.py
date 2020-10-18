@@ -44,6 +44,7 @@ def error_response(data=None, status_code=500) -> make_response:
 def get_exchange_rate():
     try:
         logger.info('Retrieving exchange rates')
+        print(request.headers)
         if 'token' not in request.headers or 'user' not in request.headers:
             return error_response('token or user headers are missing', status_code=400)
 
@@ -52,8 +53,8 @@ def get_exchange_rate():
 
         if authentication.verify_auth_token(token):
             if cache_memory.check_element_existence(user) and \
-                    int(cache_memory.get_element(user).decode('utf-8')) > USER_RATE_LIMIT:
-                return ok_response('User requests exceeded')
+                    int(cache_memory.get_element(user).decode('utf-8')) >= USER_RATE_LIMIT:
+                return error_response('User requests exceeded', status_code=429)
             else:
                 cache_memory.save_user_request(user, 1)
                 rates = {
@@ -64,15 +65,10 @@ def get_exchange_rate():
 
                 return ok_response(rates)
 
-    except SignatureExpired as error:
+    except (SignatureExpired, BadSignature) as error:
         logger.error(logs_messages.log_error(str(error)))
 
-        return error_response(str(error), status_code=400)
-
-    except BadSignature as error:
-        logger.error(logs_messages.log_error(str(error)))
-
-        return error_response(str(error), status_code=400)
+        return error_response(str(error), status_code=401)
 
     except Exception as error:
         logger.error(logs_messages.log_error(str(error)))

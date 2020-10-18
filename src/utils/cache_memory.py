@@ -35,3 +35,7 @@ class CacheMemory:
 
         else:
             self.save_element(key, value)
+
+    @staticmethod
+    def flush_cache():
+        r.flushall()
