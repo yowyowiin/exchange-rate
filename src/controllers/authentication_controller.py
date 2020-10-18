@@ -1,31 +1,12 @@
 import logging
-from flask import make_response
 from src import app
+from src.controllers.exchange_controller import ok_response, error_response
 from src.utils.authentication import Authentication
 from src.utils.logs_messages import LogsMessages
 
 logs_messages = LogsMessages()
 authentication = Authentication()
 logger = logging.getLogger('Authentication Controller')
-
-
-def ok_response(data=None) -> dict:
-    response = {
-        'status': 'OK'
-    }
-    if data or type(data) == list:
-        response['rates'] = data
-
-    return response
-
-
-def error_response(data=None, status_code=500) -> make_response:
-    if data is None:
-        data = {}
-
-    resp = make_response({'status': 'ERROR', 'error_message': data}, status_code)
-
-    return resp
 
 
 @app.route('/api/exchange-rate/token', methods=['GET'])
