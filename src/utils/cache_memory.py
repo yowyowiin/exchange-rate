@@ -1,9 +1,9 @@
 import redis
 from datetime import timedelta
 
-from settings import LIFETIME
+from settings import LIFETIME, REDIS_URL
 
-r = redis.Redis()
+r = redis.from_url(REDIS_URL)
 
 
 class CacheMemory:
