@@ -16,4 +16,10 @@ BANXICO_TOKEN = getenv('BANXICO_TOKEN')
 
 # Authentication settings
 DUMMY_USER_ID = 123
-EXPIRATION_TIME = getenv('EXPIRATION_TIME', 600)
+EXPIRATION_TIME = int(getenv('EXPIRATION_TIME', 600))
+
+# Exchange controller settings
+USER_RATE_LIMIT = 5
+
+# Cache Memory settings
+LIFETIME = int(getenv('LIFETIME', 60))  # 60 secs as default

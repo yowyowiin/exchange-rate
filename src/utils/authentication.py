@@ -1,7 +1,6 @@
 from settings import DUMMY_USER_ID, EXPIRATION_TIME
 from src import app
-from itsdangerous import (TimedJSONWebSignatureSerializer
-                          as Serializer, BadSignature, SignatureExpired)
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 
 
 class Authentication:
@@ -13,7 +12,7 @@ class Authentication:
         return s.dumps({'id': self.id})
 
     @staticmethod
-    def verify_auth_token(token: str):
+    def verify_auth_token(token: str) -> bool:
         s = Serializer(app.config['SECRET_KEY'])
         try:
             s.loads(token)
