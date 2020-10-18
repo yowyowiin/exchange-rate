@@ -2,12 +2,15 @@ version: '3'
 services:
   redis:
     image: redis:6.0.5
-    ports:
-      - "6379:6379"
-    expose:
-      - "6379"
-  exchange-rate:
+  test:
+    build: .
+    working_dir: /ws${WORKSPACE_PATH}
+    user: ${MY_USER:-root}
+    volumes:
+      - ${MY_WORKSPACE-./}:/ws
+    environment:
+      FIXER_API_KEY: ${FIXER_API_KEY}
+      BANXICO_TOKEN: ${BANXICO_TOKEN}
+    command: python3 -m unittest
     depends_on:
       - redis
-    build: ./exchange-rate/
-    container_name: exchange-rate

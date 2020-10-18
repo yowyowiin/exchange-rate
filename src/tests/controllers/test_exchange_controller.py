@@ -35,7 +35,6 @@ class TestExchangeController(unittest.TestCase):
             },
             'status': 'OK'
         }
-        print(data)
 
         assert 200 == response.status_code
         assert expected_response == data
