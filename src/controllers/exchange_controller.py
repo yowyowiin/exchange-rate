@@ -44,6 +44,9 @@ def error_response(data=None, status_code=500) -> make_response:
 def get_exchange_rate():
     try:
         logger.info('Retrieving exchange rates')
+        if 'token' not in request.headers or 'user' not in request.headers:
+            return error_response('token or user headers are missing', status_code=400)
+
         token = request.headers['token']
         user = request.headers['user']
 
@@ -64,12 +67,12 @@ def get_exchange_rate():
     except SignatureExpired as error:
         logger.error(logs_messages.log_error(str(error)))
 
-        return error_response(str(error))
+        return error_response(str(error), status_code=400)
 
     except BadSignature as error:
         logger.error(logs_messages.log_error(str(error)))
 
-        return error_response(str(error))
+        return error_response(str(error), status_code=400)
 
     except Exception as error:
         logger.error(logs_messages.log_error(str(error)))
