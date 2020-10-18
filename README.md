@@ -21,7 +21,7 @@ You should get your token via this url:
 https://www.banxico.org.mx/SieAPIRest/service/v1/token
 
 ### Creating a Fixer API Key
-You should folow the steps from this url: 
+You should follow the steps from this url: 
 https://fixer.io/quickstart
 
 ### Environment variables
