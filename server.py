@@ -10,4 +10,4 @@ logger = logging.getLogger('Server')
 
 if __name__ == '__main__':
     logger.info('Starting App')
-    app.run(port=8085)
+    app.run(port=8085, host='0.0.0.0')

@@ -1,5 +1,13 @@
-redis:
-  image: redis
-  container_name: cache
-  ports:
-    - 6379:6379
+version: '3'
+services:
+  redis:
+    image: redis:6.0.5
+    ports:
+      - "6379:6379"
+    expose:
+      - "6379"
+  exchange-rate:
+    depends_on:
+      - redis
+    build: ./exchange-rate/
+    container_name: exchange-rate

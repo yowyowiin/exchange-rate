@@ -19,7 +19,7 @@ DUMMY_USER_ID = 123
 EXPIRATION_TIME = int(getenv('EXPIRATION_TIME', 600))
 
 # Exchange controller settings
-USER_RATE_LIMIT = 5
+USER_RATE_LIMIT = int(getenv('USER_RATE_LIMIT', 5))
 
 # Cache Memory settings
 LIFETIME = int(getenv('LIFETIME', 60))  # 60 secs as default
