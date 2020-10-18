@@ -2,6 +2,7 @@ version: '3'
 services:
   redis:
     image: redis:6.0.5
+
   test:
     build: .
     working_dir: /ws${WORKSPACE_PATH}
