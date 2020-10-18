@@ -1,4 +1,6 @@
 import logging
+
+from settings import APP_PORT
 from src import app
 
 logging.basicConfig(
@@ -10,4 +12,4 @@ logger = logging.getLogger('Server')
 
 if __name__ == '__main__':
     logger.info('Starting App')
-    app.run(port=8085, host='0.0.0.0')
+    app.run(port=APP_PORT, host='0.0.0.0')
